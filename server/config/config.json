@@ -1,0 +1,12 @@
+{
+    "test" : {
+        "PORT" : 3000,
+        "MONGODB_URI" : "mongodb://localhost:27017/ExpensesDBtest",
+        "JWT_SECRET" : "abrakadabra"
+    },
+    "development" : {
+        "PORT" : 3000,
+        "MONGODB_URI" : "mongodb://localhost:27017/ExpensesDB",
+        "JWT_SECRET" : "abrakadabra"
+    }
+}
