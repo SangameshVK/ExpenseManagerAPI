@@ -43,14 +43,18 @@ UserSchema.methods.pickIdEmail = function () {
 
 UserSchema.pre('save', async function (next) {
     var user = this;
+    if (!user.isModified('password')) {
+        return next();
+    }
     try {
         var salt = await bcrypt.genSalt(GenSaltRounds);
         var passwordHash = await bcrypt.hash(user.password, salt);
         user.password = passwordHash;
-        logger.info(`User password hashed to ${passwordHash} using salt ${salt}`);
+        logger.info(`User password hashed to ${passwordHash} using salt ${salt}`);   
     } catch (e) {
         logger.error(`Exception hashing password for user ${user.email}: ${e.message}`);
     }
+    next();
 });
 
 UserSchema.methods.generateAuthToken = async function() {

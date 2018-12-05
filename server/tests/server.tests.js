@@ -2,31 +2,28 @@ const expect = require("expect");
 const request = require("supertest");
 
 const {app} = require("../server"); //Server should always be loaded before any other project file
-const {User} = require("../models/user")
+const {User} = require("../models/user");
+const testUtils = require("./testUtils");
+const constants = require("../utils/constants");
+
+var email = constants.TestEmail;
+var password = constants.TestPassword;
+var tokenCount = 0;
 
 describe('POST /signup', async () => {
     // Following two test cases have to be executed one after another without any changes to User collection.
-    var email = 'abcd@gmail.com';
-    var password = 'test1234';
     it('should signup a user', (done) => {
         User.deleteMany({}, () => {
             request(app)
                 .post('/signup')
                 .send({email, password})
                 .expect(200)
-                .expect((res) => {
-                    expect(res.headers['x-auth']).toBeTruthy();
-                    expect(res.body._id).toBeTruthy();
-                    expect(res.body.email).toBe(email);
-                })
-                .end(async (err) => {
-                    if (err) {
-                        done(err);
-                    }
+                .expect(testUtils.verifyAuthResponse)
+                .end(async (err, res) => {
+                    if (err) { return done(err); }
                     try {
-                        var user = await User.findOne({email});
-                        expect(user).toBeTruthy();
-                        expect(user.password).not.toBe(password);
+                        await testUtils.verifyUserInDB(res, tokenCount);
+                        ++tokenCount; 
                         done();
                     } catch (e) {
                         done(e);
@@ -41,5 +38,25 @@ describe('POST /signup', async () => {
             .send({email, password})
             .expect(400)
             .end(done);
+    });
+});
+
+describe("POST /login", async () => {
+    it("should login with valid credentials", (done) => {
+        request(app)
+            .post('/login')
+            .send({email, password})
+            .expect(200)
+            .expect(testUtils.verifyAuthResponse)
+            .end(async (err) => {
+                if (err) { return done(err); }
+                try {
+                    await testUtils.verifyUserInDB(res, tokenCount);
+                    ++tokenCount; 
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
     });
 });
