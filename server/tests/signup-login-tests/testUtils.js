@@ -1,18 +1,18 @@
 const bcrypt = require("bcryptjs");
 const expect = require("expect");
 
-const {User} = require("../models/user");
-const constants = require("../utils/constants");
+const {User} = require("../../models/user");
+const constants = require("../../utils/constants");
 
 var email = constants.TestEmail;
 var password = constants.TestPassword;
 
-const verifyUserInDB = async (res) => {
+const verifyUserInDB = async (res, tokenIndex) => {
     var user = await User.findOne({email});
     expect(user).toBeTruthy();
     var passwordCompare = await bcrypt.compare(password, user.password);
     expect(passwordCompare).toBeTruthy();
-    expect(user.toObject().tokens[0]).toMatchObject({
+    expect(user.toObject().tokens[tokenIndex]).toMatchObject({
         access: 'auth',
         token: res.headers['x-auth']
     });

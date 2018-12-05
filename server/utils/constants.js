@@ -4,6 +4,8 @@ const DefaultPort = 3001;
 const GenSaltRounds = 10;
 const TestEmail = 'abcd@gmail.com';
 const TestPassword = 'test1234';
+const UserDoesNotExistMsg = 'User does not exist';
+const PasswordIncorrectMsg = 'Incorrect Password';
 
 module.exports = {
     TestEnv,
@@ -11,5 +13,7 @@ module.exports = {
     DefaultPort,
     GenSaltRounds,
     TestEmail,
-    TestPassword
+    TestPassword,
+    UserDoesNotExistMsg,
+    PasswordIncorrectMsg
 }
