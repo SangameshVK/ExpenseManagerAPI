@@ -13,6 +13,7 @@ var authenticate = async (req, res, next) => {
         }
         req.user = user;
         req.token = token;
+        req.body.creator = user._id;
         next();
     } catch (e) {
         logger.error(`Authentication failure ${e}`);
