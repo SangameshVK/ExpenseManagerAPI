@@ -66,6 +66,22 @@ UserSchema.methods.generateAuthToken = async function() {
     return token;
 }
 
+UserSchema.statics.findByToken = function (token) {
+    var User = this; //Model as this binding
+    var decoded;
+    try {
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (e) {
+        //return new Promise((resolve, reject) => reject());
+        return Promise.reject();
+    }
+    return User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access': 'auth'
+    });
+};
+
 //TODO: Make deleteAll a promise
 
 const User = mongoose.model('User', UserSchema);

@@ -1,8 +1,8 @@
-const bcrypt = require("bcryptjs");
-const expect = require("expect");
+const bcrypt = require('bcryptjs');
+const expect = require('expect');
 
-const {User} = require("../../models/user");
-const constants = require("../../utils/constants");
+const constants = require('../../utils/constants');
+const {User} = require('../../models/user');
 
 var email = constants.TestEmail;
 var password = constants.TestPassword;

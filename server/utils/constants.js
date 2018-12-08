@@ -6,6 +6,7 @@ const TestEmail = 'abcd@gmail.com';
 const TestPassword = 'test1234';
 const UserDoesNotExistMsg = 'User does not exist';
 const PasswordIncorrectMsg = 'Incorrect Password';
+const DefaultCategory = 'Miscellaneous';
 
 module.exports = {
     TestEnv,
@@ -15,5 +16,6 @@ module.exports = {
     TestEmail,
     TestPassword,
     UserDoesNotExistMsg,
-    PasswordIncorrectMsg
+    PasswordIncorrectMsg,
+    DefaultCategory
 }

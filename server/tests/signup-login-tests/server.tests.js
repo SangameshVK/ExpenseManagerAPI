@@ -7,12 +7,15 @@ const {User} = require("../../models/user");
 const testUtils = require("./testUtils");
 const constants = require("../../utils/constants");
 
-var email = constants.TestEmail;
-var password = constants.TestPassword;
+const email = constants.TestEmail;
+const password = constants.TestPassword;
+const validSignupFailure = `Failing because could not signup user ${email} in valid signup test case`;
 var tokenCount = 0;
 
-describe('POST /signup', async () => {
+describe('POST /signup', () => {
     // Following two test cases have to be executed one after another without any changes to User collection.
+    // TO FIND OUT: Is there a guarantee that their callbacks will execute in order
+                 // => YES, callback of next test case is called only after done() is called from previous test case
     it('should signup a user', (done) => {
         User.deleteMany({}, () => {
             request(app)
@@ -34,6 +37,9 @@ describe('POST /signup', async () => {
     });
 
     it('should not signup with duplicate email', (done) => {
+        if (tokenCount == 0) {
+            return done(validSignupFailure);
+        }
         request(app)
             .post('/signup')
             .send({email, password})
@@ -42,8 +48,11 @@ describe('POST /signup', async () => {
     });
 });
 
-describe("POST /login", async () => {
+describe("POST /login", () => {
     it("should login with valid credentials", (done) => {
+        if (tokenCount == 0) {
+            return done(validSignupFailure);
+        }
         request(app)
             .post('/login')
             .send({email, password})
@@ -62,6 +71,9 @@ describe("POST /login", async () => {
     });
 
     it("reject login with non existent email", (done) => {
+        if (tokenCount == 0) {
+            return done(validSignupFailure);
+        }
         request(app)
             .post('/login')
             .send({email: 'wrongEmail' + email, password})
@@ -74,6 +86,9 @@ describe("POST /login", async () => {
     });
 
     it("reject login with wrong password", (done) => {
+        if (tokenCount == 0) {
+            return done(validSignupFailure);
+        }
         request(app)
             .post('/login')
             .send({email, password: password + 'wrongPass'})
@@ -92,5 +107,5 @@ describe("POST /login", async () => {
                     done(e);
                 }
             });
-    })
+    });
 });

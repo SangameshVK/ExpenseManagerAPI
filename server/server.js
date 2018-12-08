@@ -8,7 +8,10 @@ require('./config/config');
 const {UserDoesNotExistMsg, PasswordIncorrectMsg} = require('./utils/constants');
 const {sendError, sendSuccess} = require('./utils/utils');
 const {User} = require('./models/user');
+const {Expense} = require('./models/expense');
 const {logger} = require('./utils/logger');
+const {authenticate} = require('./middleware/authenticate');
+
 const app = new express();
 
 app.use(bodyParser.json());
@@ -44,6 +47,18 @@ app.post('/login', async (req, res) => {
         res.header('x-auth', token);
         sendSuccess(res, user.pickIdEmail());
     } catch (e) {
+        logger.error(e);
+        sendError(res, e.message);
+    }
+});
+
+app.post('/expense',authenticate, async (req, res) => {
+    try {
+        var expense = new Expense(req.body);
+        await expense.save();
+        logger.info(`Saved expense ${expense._id} to database`);
+        sendSuccess(res, expense);
+    } catch(e) {
         logger.error(e);
         sendError(res, e.message);
     }
