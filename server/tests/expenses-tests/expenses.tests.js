@@ -1,6 +1,8 @@
 const expect = require('expect');
+const {ObjectID} = require('mongodb');
 const request = require('supertest');
 const httpStatusCodes = require('http-status-codes');
+const _ = require('lodash');
 
 const {app} = require('../../server'); //Server should always be loaded before any other project file
 const {DefaultCategory} = require('../../utils/constants');
@@ -142,6 +144,9 @@ describe('POST /expense', () => {
             .post('/expense')
             .send({category, amount, description, dateTime})
             .expect(httpStatusCodes.UNAUTHORIZED)
+            .expect((res) => {
+                expect(res.body._id).toBeFalsy();
+            })
             .end(done); 
         })
 
@@ -154,6 +159,31 @@ describe('POST /expense', () => {
                 .end(done);
         });
 
-        //TODO: Test cases with invalid amount, invalid user
+        //TODO: Test cases with invalid amoun
     });
 });
+
+describe('GET /expenses', () => {
+    it('should get all expenses belonging to user', (done) => {
+        request(app)
+            .get('/expenses')
+            .set('x-auth',users[0].tokens[0].token)
+            .expect(httpStatusCodes.OK)
+            .expect((res) => {
+                expect(res.body.expenses.length).toBe(1);
+                expect(res.body.expenses[0]._id).toBe(expenses[0]._id.toHexString());
+                expect(res.body.expenses[0]).toMatchObject(_.pick(expenses[0], ['category', 'amount', 'dateTime']));
+            })
+            .end(done);
+    });
+
+    it('should not get expenses without x-auth token', (done) => {
+        request(app)
+            .get('/expenses')
+            .expect(httpStatusCodes.UNAUTHORIZED)
+            .expect((res) => {
+                expect(res.body.expenses).toBeFalsy();
+            })
+            .end(done);
+    });
+})

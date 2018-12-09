@@ -7,6 +7,9 @@ const TestPassword = 'test1234';
 const UserDoesNotExistMsg = 'User does not exist';
 const PasswordIncorrectMsg = 'Incorrect Password';
 const DefaultCategory = 'Miscellaneous';
+const InvalidIdMsg = 'Invalid ID';
+const IdNotFoundMsg = 'ID not found';
+const FilterProperties = ['__v', 'creator'];
 
 module.exports = {
     TestEnv,
@@ -17,5 +20,8 @@ module.exports = {
     TestPassword,
     UserDoesNotExistMsg,
     PasswordIncorrectMsg,
-    DefaultCategory
+    DefaultCategory,
+    InvalidIdMsg,
+    IdNotFoundMsg,
+    FilterProperties
 }

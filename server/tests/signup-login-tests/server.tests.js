@@ -80,7 +80,7 @@ describe("POST /login", () => {
             .expect(httpStatusCodes.BAD_REQUEST)
             .expect((res) => {
                 expect(res.headers['x-auth']).toBeFalsy();
-                expect(res.text).toBe(constants.UserDoesNotExistMsg);
+                expect(res.body.error).toBe(constants.UserDoesNotExistMsg);
             })
             .end(done);
     });
@@ -95,10 +95,10 @@ describe("POST /login", () => {
             .expect(httpStatusCodes.UNAUTHORIZED)
             .expect((res) => {
                 expect(res.headers['x-auth']).toBeFalsy();
-                expect(res.text).toBe(constants.PasswordIncorrectMsg);
+                expect(res.body.error).toBe(constants.PasswordIncorrectMsg);
             })
             .end(async (err) => {
-                if (err) { done(err) }
+                if (err) { return done(err) }
                 try {
                     var user = await User.findOne({email});
                     expect(user.tokens.length).toBe(tokenCount);

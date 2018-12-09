@@ -28,15 +28,15 @@ const expenseOneId = new ObjectID();
 const expenseTwoId = new ObjectID();
 const expenses = [{
     _id: expenseOneId,
-    name: "Sample Expense 1",
     amount: 100.50,
-    creator: userOneId
+    creator: userOneId,
+    description: "Sample Expense 1",
+    dateTime: new Date().getTime()
 },{
     _id: expenseTwoId,
-    name: "Sample Expense 2",
+    category: "Food",
     amount: 200,
-    creator: userTwoId,
-    category: "Dinner"
+    creator: userTwoId
 }];
 
 const populateUsers = (done) => {
